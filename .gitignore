@@ -1,9 +1,23 @@
+# Python
 __pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
 venv/
-judge0/
-repository/
-d.py
-demo.py
-demo1.py
-run.py
-demo2.py
+.venv/
+env/
+.env/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

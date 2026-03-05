@@ -4,7 +4,15 @@ from typing import List, Dict, Any
 
 class TestCase(BaseModel):
     input: str
+    hidden: bool
     output: str
+
+class Visible_Code(BaseModel):
+    java: str
+    c: str
+    cpp: str
+    python: str
+    javascript: str    
 
 class Pre_Code(BaseModel):
     java: str
@@ -12,6 +20,7 @@ class Pre_Code(BaseModel):
     cpp: str
     python: str
     javascript: str
+    Boiler_code: List[Visible_Code]
 
 class Post_Code(BaseModel):
     java: str

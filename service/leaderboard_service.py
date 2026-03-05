@@ -1,12 +1,12 @@
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import desc, select
 
 load_dotenv()
 from models.leaderboard import Leaderboard
 
 
-async def admin_round_2_service(
+async def get_leaderboard_entry(
     db: AsyncSession,
     Team_Name: str
     ):
@@ -14,3 +14,13 @@ async def admin_round_2_service(
     event = result.scalar_one_or_none()
 
     return event
+
+async def get_current_leaderboard(db: AsyncSession):
+
+    result = await db.execute(
+        select(Leaderboard).order_by(desc(Leaderboard.team_score))
+    )
+
+    records = result.scalars().all()
+
+    return records

@@ -1,19 +1,28 @@
 
-from fastapi import APIRouter, Depends, FastAPI
+from fastapi import  Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import get_db
 from models.round_1.problems import Problem
 from schemas.round_1_schema.problem_schema import ProblemCreate
+from service.leaderboard_service import get_current_leaderboard, get_leaderboard_entry
 from service.round_2_service import admin_round_2_service, get_all_round_2, get_round_2_by_team_name
 from schemas.round_2_schema import admin_2_submit
 from service.round_3_service import admin_round_3_service, get_all_round_3, get_round_3_by_team_name
 from schemas.round_3_schema import admin_3_submit
-from schemas.round_4_schema import Admin_4_Submit
+from schemas.round_4_schema import Admin_4_Submit, Admin_4_Status
 from service.round_4_service import eligible_for_round_5_service, get_all_round_4, get_round_4_by_team_name, submit_round_4_service, submit_status_round_4_service
 from service.round_5_service import Admin_round_5_service, get_all_round_5, get_round_5_by_team_name
 from schemas.round_5_schema import Admin_5_Submit
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=False
+)
 @app.post("/judge_round_2")
 async def judge_round_2_endpoint(
     round_2: admin_2_submit,
@@ -136,9 +145,17 @@ async def check_eligibility_for_round_5(db: AsyncSession = Depends(get_db)):
 
 
 @app.post("/submit_status_round_4")
-async def submit_status_round_4(result: Admin_4_Submit, db: AsyncSession = Depends(get_db)):
+async def submit_status_round_4(result: Admin_4_Status, db: AsyncSession = Depends(get_db)):
     return await submit_status_round_4_service(
         db=db,
         Team_Name=result.Team_Name,
         status_4=result.status_4
     )
+
+@app.get("/leaderboard")
+async def get_leaderboard(db: AsyncSession = Depends(get_db)):
+    return await get_current_leaderboard(db)
+
+@app.get("/leaderboard_entry/{team_name}")
+async def get_leaderboard_entry(team_name: str, db: AsyncSession = Depends(get_db)):
+    return await get_leaderboard_entry(db, team_name)

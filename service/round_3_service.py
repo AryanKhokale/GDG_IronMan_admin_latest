@@ -38,9 +38,9 @@ async def admin_round_3_service(
     return event
 
 async def get_all_round_3(db: AsyncSession) -> List[Round_3]:
-    result = await db.execute(select(Round_3))
+    result = await db.execute(select(Round_3.Team_Name))
     events = result.scalars().all()
-    return events
+    return {"Teams":events}
 
 async def get_round_3_by_team_name(db: AsyncSession, Team_Name: str) -> Round_3:
     result = await db.execute(select(Round_3).where(Round_3.Team_Name == Team_Name))

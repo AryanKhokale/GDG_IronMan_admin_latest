@@ -6,6 +6,7 @@ from core.db import get_db
 from models.round_1.problems import Problem
 from schemas.round_1_schema.problem_schema import ProblemCreate
 from service.leaderboard_service import get_current_leaderboard, get_leaderboard_entry
+from service.permission import permission_service
 from service.round_2_service import admin_round_2_service, get_all_round_2, get_round_2_by_team_name
 from schemas.round_2_schema import admin_2_submit
 from service.round_3_service import admin_round_3_service, get_all_round_3, get_round_3_by_team_name
@@ -159,3 +160,14 @@ async def get_leaderboard(db: AsyncSession = Depends(get_db)):
 @app.get("/leaderboard_entry/{team_name}")
 async def get_leaderboard_entry(team_name: str, db: AsyncSession = Depends(get_db)):
     return await get_leaderboard_entry(db, team_name)
+
+@app.post("/update_permission")
+async def update_permission_endpoint(
+    permission: str,
+    db: AsyncSession = Depends(get_db)
+):
+    return await permission_service(
+        db=db,
+        Role='admin',
+        permission=permission
+    )
